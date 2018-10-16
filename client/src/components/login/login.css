@@ -1,0 +1,17 @@
+.form-container {
+    padding: 50px 50px 20px 50px;
+    transition: all 1s ease;
+    text-align: left;
+}
+
+.skip-btn {
+    font-size: small;
+    text-align: right;
+}
+
+.pointer {
+    display: inline-block;
+}
+.pointer:hover {
+    cursor: pointer;
+}
