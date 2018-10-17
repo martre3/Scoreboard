@@ -8,7 +8,7 @@ class Leaderboard extends Component {
     return (
       <div style={{color: this.props.theme.palette.primary.main }}>
         <h1>Leaderboard</h1>
-        <Results cardModifier="card-leaderboard" apiUrl="/results/leaders"/>
+        <Results cardModifier="card-leaderboard" apiUrl="/results/leaders" refreshRate={15000}/>
       </div>
     );
   }

@@ -9,8 +9,6 @@ import Icon from '@mdi/react';
 import { mdiAccountOutline, mdiClockOutline, mdiTrophyVariantOutline } from '@mdi/js'
 import Card from './card';
 
-const REFRESH_RATE = 100000;
-
 class Results extends Component {
 
   constructor() {
@@ -25,8 +23,10 @@ class Results extends Component {
 
   componentDidMount() {
     this.fetchResults();
-    const fetchInterval = setInterval(this.fetchResults, REFRESH_RATE);
-    this.setState({fetchInterval: fetchInterval});
+    if (typeof this.props.refreshRate !== 'undefined') {
+      const fetchInterval = setInterval(this.fetchResults, this.props.refreshRate);
+      this.setState({fetchInterval: fetchInterval});
+    }
 
     if (typeof this.props.setRefresh !== 'undefined') {
       this.props.setRefresh(this.fetchResults);
@@ -38,7 +38,8 @@ class Results extends Component {
       .then((res) => {
         const offset = typeof this.props.requestData === 'undefined' ? 0 : this.props.requestData.page * this.props.requestData.itemsPerPage;
 
-        const results = res.data.data.map((result, index) => <Card key={result.id} className={this.props.cardModifier} data={result} position={offset + index + 1}/>);
+        const results = res.data.data.map((result, index) => <Card key={result.id} id={result.id} className={this.props.cardModifier}
+                                                                   data={result} position={offset + index + 1} allowEdit={this.props.allowEdit} refresh={this.fetchResults}/>);
         this.setState({
           results: results
         });
@@ -56,11 +57,11 @@ class Results extends Component {
     return (
         <Paper className="results-container">
             <Grid container className={"card card-header " + this.props.cardModifier}>
-                <Grid item lg={1} >
-                    <Icon path={mdiTrophyVariantOutline} size={'calc(5px + 1em)'} className="mdi mdi-trophy-variant-outline"/>
+                <Grid item xs={1} >
+                    <Icon path={mdiTrophyVariantOutline} className={'icon'} size={'calc(10px + 1em)'}/>
                 </Grid>
-                <Grid item lg={6}><Icon path={mdiAccountOutline} size={'calc(5px + 1em)'} className="mdi mdi-account-outline"/></Grid>
-                <Grid item lg={5}><Icon path={mdiClockOutline} size={'calc(5px + 1em)'} className="mdi mdi-clock-outline"/></Grid>
+                <Grid item xs={6}><Icon path={mdiAccountOutline} className={'icon'} size={'calc(10px + 1em)'}/></Grid>
+                <Grid item xs={this.props.allowEdit ? 4 : 5}><Icon className={'icon'} path={mdiClockOutline} size={'calc(10px + 1em)'}/></Grid>
             </Grid>
           <FlipMove enterAnimation={this.props.disableAnimations ? "none" : "fade"} leaveAnimation={this.props.disableAnimations ? "none" : "fade"}>
             {this.state.results}

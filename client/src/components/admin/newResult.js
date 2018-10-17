@@ -4,6 +4,7 @@ import { withTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 class NewResult extends Component {
 
@@ -12,7 +13,8 @@ class NewResult extends Component {
     this.state = {
       name: '',
       time: '',
-      pending: false
+      pending: false,
+      error: ''
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,7 +29,7 @@ class NewResult extends Component {
       pending: true
     });
 
-    API.axios.post('/results', {
+    API.axios.post('/auth/results', {
       name: this.state.name,
       time: this.state.time
     })
@@ -39,9 +41,9 @@ class NewResult extends Component {
       })
       .catch((er) => {
         this.setState({
-          pending: false
+          pending: false,
+          error: er.response.data.error,
         });
-        console.log(er);
       });
   }
 
@@ -78,6 +80,10 @@ class NewResult extends Component {
             margin="normal"
             variant="outlined"
           />
+          {this.state.error ?
+            <FormHelperText>{this.state.error}</FormHelperText>
+          :
+            ''}
           <Button type="submit" disabled={!!this.state.pending}>Submit</Button>
         </form>
       </Paper>
