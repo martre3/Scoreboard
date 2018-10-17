@@ -5,6 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
 const db = require('../models/index');
+const path = require('path');
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
@@ -131,3 +132,12 @@ app.post('/api/results/page', async (req, res) => {
   }
 });
 
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.resolve('/app/client/build');
+  console.log(buildPath);
+  app.use(express.static(buildPath));
+
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
