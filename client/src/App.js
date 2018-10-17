@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from "./components/login/login";
+import Results from "./components/results/results";
+import NewResult from "./components/admin/newResult";
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 class App extends Component {
   theme = createMuiTheme({
@@ -15,15 +17,19 @@ class App extends Component {
 
   render() {
     return (
-      <MuiThemeProvider theme={this.theme}>
-        <div className="App">
-          <header className="App-header">
+        <MuiThemeProvider theme={this.theme}>
+          <div className="App">
             <Router>
-              <Route exact path="/" component={Login} />
+              <header className="App-header">
+                <div>
+                  <Route exact path="/" component={Login} />
+                  <Route exact path="/results" component={Results} />
+                  <Route exact path="/admin" component={NewResult} />
+                </div>
+              </header>
             </Router>
-          </header>
-        </div>
-      </MuiThemeProvider>
+          </div>
+        </MuiThemeProvider>
     );
   }
 }

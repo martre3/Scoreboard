@@ -4,14 +4,11 @@
     text-align: left;
 }
 
-.skip-btn {
-    font-size: small;
+.button-container {
     text-align: right;
+    font-size: small;
 }
-
-.pointer {
+.skip-btn {
+    text-decoration: none;
     display: inline-block;
-}
-.pointer:hover {
-    cursor: pointer;
 }
