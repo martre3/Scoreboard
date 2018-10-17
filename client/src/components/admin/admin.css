@@ -1,0 +1,23 @@
+.modal {
+    position: absolute;
+    width: 300px;
+    margin: auto;
+}
+
+.new-result-form {
+    padding: 10px 50px 10px 50px;
+}
+
+.leaderboard-link-container {
+    margin-top: 10px;
+    font-size: 18px;
+    float: right;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.new-entry-button {
+    float: left;
+}

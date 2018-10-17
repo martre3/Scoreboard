@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import API from '../../helpers/API';
 import { withTheme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 class NewResult extends Component {
 
@@ -8,7 +11,8 @@ class NewResult extends Component {
     super();
     this.state = {
       name: '',
-      time: ''
+      time: '',
+      pending: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,14 +23,24 @@ class NewResult extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    this.setState({
+      pending: true
+    });
+
     API.axios.post('/results', {
       name: this.state.name,
       time: this.state.time
     })
       .then((res) => {
-        console.log(res);
+        this.props.onFormSubmit();
+        this.setState({
+          pending: false
+        });
       })
       .catch((er) => {
+        this.setState({
+          pending: false
+        });
         console.log(er);
       });
   }
@@ -45,13 +59,28 @@ class NewResult extends Component {
 
   render() {
     return (
-      <div>
+      <Paper className={'new-result-form'}>
+        <h3>New entry</h3>
         <form onSubmit={this.handleSubmit}>
-          <input name="name" type="text" value={this.state.name} onChange={this.handleNameChange}/>
-          <input name="time" type="text" value={this.state.time} onChange={this.handleTimeChange}/>
-          <button type="submit">Save</button>
+          <TextField
+            label="Name"
+            id="margin-none"
+            value={this.state.name}
+            onChange={this.handleNameChange}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            label="Time"
+            id="margin-none"
+            value={this.state.time}
+            onChange={this.handleTimeChange}
+            margin="normal"
+            variant="outlined"
+          />
+          <Button type="submit" disabled={!!this.state.pending}>Submit</Button>
         </form>
-      </div>
+      </Paper>
     );
   }
 }
