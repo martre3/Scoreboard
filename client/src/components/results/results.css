@@ -74,6 +74,7 @@ h1 {
 
 .icon {
     vertical-align: bottom;
+    margin-bottom: 5px;
 }
 
 .remove-btn:hover {
