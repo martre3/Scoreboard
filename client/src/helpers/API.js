@@ -10,13 +10,12 @@ class Api {
   }
 
   getBaseUrl() {
-    // let baseURL = `http://${process.env.VUE_APP_API_HOST}`;
-    //   if (process.env.VUE_APP_API_HOST === 'localhost') {
-    //     baseURL = `${baseURL}:${process.env.VUE_APP_API_PORT}`;
-    //   }
+    let baseURL = `http://${process.env.REACT_APP_API_HOST}`;
+      if (process.env.REACT_APP_API_HOST === 'localhost') {
+        baseURL = `${baseURL}:${process.env.REACT_APP_API_PORT}`;
+      }
 
-    let baseURL = "http://localhost:5000";
-
+      console.log(baseURL);
     return baseURL;
   }
 
