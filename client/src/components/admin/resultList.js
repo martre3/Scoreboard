@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { withTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Results from '../results/results';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import NewResult from './newResult';
 import './admin.css';
+import Api from '../../helpers/API';
 
 class ResultList extends Component {
   constructor() {
@@ -99,26 +100,29 @@ class ResultList extends Component {
 
   render() {
     return (
-      <div style={{color: this.props.theme.palette.primary.main }}>
-        <Modal open={this.state.modalOpened} style={{alignItems:'center',justifyContent:'center', display:'flex'}} onClose={this.closeModal}>
-          <div style={this.getModalStyle()} className={'modal'}>
-            <NewResult onFormSubmit={this.onNewEntry}/>
-          </div>
-        </Modal>
-        <Results cardModifier="card-panel" apiUrl="/results/page" requestData={this.state} onResponse={this.onResponse} disableAnimations={true} setRefresh={this.setRefreshMethod}/>
-        <div>
-          <Button onClick={this.openModal} className="new-entry-button inline">New entry</Button>
-          <IconButton className="inline" disabled={this.isPreviousDisabled()} color="primary" onClick={this.prevPage}>
-            &lt;
-          </IconButton>
-          <IconButton className="inline" disabled={this.isNextDisabled()} color="primary" onClick={this.nextPage}>
-            &gt;
-          </IconButton>
-          <div className="leaderboard-link-container inline">
-            <Link to="/results"><Button>Go to the public leaderboard</Button></Link>
+      !Api.isAuthenticated() ? <Redirect to={'/'}/> :
+        <div style={{color: this.props.theme.palette.primary.main}}>
+          <Modal open={this.state.modalOpened} style={{alignItems: 'center', justifyContent: 'center', display: 'flex'}}
+                 onClose={this.closeModal}>
+            <div style={this.getModalStyle()} className={'modal'}>
+              <NewResult onFormSubmit={this.onNewEntry}/>
+            </div>
+          </Modal>
+          <Results cardModifier="card-panel" apiUrl="/results/page" requestData={this.state}
+                   onResponse={this.onResponse} disableAnimations={true} setRefresh={this.setRefreshMethod} allowEdit={true}/>
+          <div>
+            <Button onClick={this.openModal} className="new-entry-button inline">New entry</Button>
+            <IconButton className="inline" disabled={this.isPreviousDisabled()} color="primary" onClick={this.prevPage}>
+              &lt;
+            </IconButton>
+            <IconButton className="inline" disabled={this.isNextDisabled()} color="primary" onClick={this.nextPage}>
+              &gt;
+            </IconButton>
+            <div className="leaderboard-link-container inline">
+              <Link to="/results"><Button>Go to the public leaderboard</Button></Link>
+            </div>
           </div>
         </div>
-      </div>
     );
   }
 }

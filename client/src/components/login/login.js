@@ -53,7 +53,8 @@ class Login extends Component {
     </form>;
 
     return (
-      <div>
+      Api.isAuthenticated() ? <Redirect to={'/admin'}/> :
+      <div className={"align-middle"}>
         <Paper children={form} classes={{root: 'form-container'}}/>
         <div className="button-container">
           <Link className="skip-btn" to="/results"><div style={{color: this.props.theme.palette.primary.main }}>Go to results</div></Link>

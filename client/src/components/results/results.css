@@ -65,3 +65,17 @@ h1 {
 .in-progress {
     opacity: 0.2;
 }
+
+.modal {
+    position: absolute;
+    width: 300px;
+    margin: auto;
+}
+
+.icon {
+    vertical-align: bottom;
+}
+
+.remove-btn:hover {
+    cursor: pointer;
+}

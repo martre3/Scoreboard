@@ -12,7 +12,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
-app.post('/login', (req, res) => {
+app.post('/api/auth/*', async (req, res, next) => {
+  try {
+    if (typeof req.header('jwt') !== 'undefined') {
+      const decodedData = await jwt.verify(req.header('jwt'));
+      if (decodedData.data === 'DataDog') {
+        next();
+      } else {
+        throw "Invalid token";
+      }
+    } else {
+      throw "Unauthenticated";
+    }
+  } catch (e) {
+    res.status(401).json({error: e});
+  }
+});
+
+app.post('/api/login', (req, res) => {
   if (typeof req.body.password !== 'undefined' && req.body.password === 'DataDog') {
     res.json({token: jwt.create(req.body.password)});
   } else {
@@ -20,12 +37,12 @@ app.post('/login', (req, res) => {
   }
 });
 
-app.get('/results', async (req, res) => {
+app.get('/api/results', async (req, res) => {
   const results = await db.Result.findAll();
   res.json(results);
 });
 
-app.post('/results/leaders', async (req, res) => {
+app.post('/api/results/leaders', async (req, res) => {
   const results = await db.Result.findAll({
     limit: 10,
     order: [
@@ -39,38 +56,60 @@ app.post('/results/leaders', async (req, res) => {
     });
 });
 
-app.post('/results', async (req, res) => {
+app.post('/api/auth/results', async (req, res) => {
   try {
+    if (typeof req.body.time === 'undefined') {
+      throw "time cannot be empty";
+    }
 
     const date = new Date();
     date.setTime(0);
     const parts = req.body.time.split(":");
     const secondParts = parts[1].split(".");
 
+    if (parts.length !== 2) {
+      throw "incorrect format. Use mm:ss.ms";
+    }
+
     date.setMinutes(parts[0]);
     date.setSeconds(secondParts[0]);
 
-    console.log(secondParts);
     if (typeof secondParts[1] !== 'undefined') {
       date.setMilliseconds(secondParts[1]);
     }
 
-    console.log(date);
     const result = db.Result.build({
       name: req.body.name,
       time: date
     });
 
-    console.log(result);
     const resData = await result.save();
-    console.log(resData);
     res.json({result: resData});
   } catch (e) {
-    res.status(400).json({error: e.original});
+    res.status(400).json({error: e});
   }
 });
 
-app.post('/results/page', async (req, res) => {
+app.post('/api/auth/remove', async (req, res) => {
+  try {
+    if (typeof req.body.id === 'undefined') {
+      throw "id is required";
+    }
+    const result = await db.Result.destroy({
+      where: {
+        id: req.body.id
+      }
+    });
+
+    //await result.destroy();
+    res.json({success: 'success'});
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({error: e});
+  }
+});
+
+app.post('/api/results/page', async (req, res) => {
   try {
     const results = await db.Result.findAll({
       offset: req.body.itemsPerPage * req.body.page,
@@ -88,7 +127,7 @@ app.post('/results/page', async (req, res) => {
       total: all.length,
     });
   } catch (e) {
-    res.status(400).json({error: e.original});
+    res.status(400).json({error: e});
   }
 });
 
