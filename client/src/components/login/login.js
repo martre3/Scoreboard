@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { withTheme } from '@material-ui/core/styles';
+import { Link, Redirect } from "react-router-dom";
 import './login.css';
 
 class Login extends Component {
@@ -13,7 +14,8 @@ class Login extends Component {
     super();
     this.state = {
       password: '',
-      error: ''
+      error: '',
+      redirect: ''
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,6 +30,9 @@ class Login extends Component {
     })
       .then((res) => {
         Api.setJWT(res.data.token);
+        this.setState({
+          redirect: <Redirect to='/admin'/>
+        });
       })
       .catch((err) => {
         this.setState({error: err.response.data.error});
@@ -50,7 +55,10 @@ class Login extends Component {
     return (
       <div>
         <Paper children={form} classes={{root: 'form-container'}}/>
-        <div className="skip-btn" style={{color: this.props.theme.palette.primary.main }}><div className="pointer">Go to results</div></div>
+        <div className="button-container">
+          <Link className="skip-btn" to="/results"><div style={{color: this.props.theme.palette.primary.main }}>Go to results</div></Link>
+        </div>
+        {this.state.redirect}
       </div>
     );
   }
