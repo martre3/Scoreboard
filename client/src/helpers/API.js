@@ -21,9 +21,9 @@ class Api {
   }
 
   getBaseUrl() {
-    let baseURL = `http://${process.env.REACT_APP_API_HOST}`;
+    let baseURL = `${process.env.REACT_APP_API_HOST}`;
     if (process.env.REACT_APP_API_HOST === 'localhost') {
-      baseURL = `${baseURL}:${process.env.REACT_APP_API_PORT}`;
+      baseURL = `http://${baseURL}:${process.env.REACT_APP_API_PORT}`;
     }
 
     baseURL += "/api";

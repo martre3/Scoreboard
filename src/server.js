@@ -1,3 +1,5 @@
+require('dotenv').load();
+
 const bodyParser = require('body-parser');
 const express = require('express');
 const jwt = require('./helpers/JWTfactory');
@@ -16,7 +18,7 @@ app.post('/api/auth/*', async (req, res, next) => {
   try {
     if (typeof req.header('jwt') !== 'undefined') {
       const decodedData = await jwt.verify(req.header('jwt'));
-      if (decodedData.data === 'DataDog') {
+      if (decodedData.data === 'DataD0g') {
         next();
       } else {
         throw "Invalid token";
@@ -30,7 +32,7 @@ app.post('/api/auth/*', async (req, res, next) => {
 });
 
 app.post('/api/login', (req, res) => {
-  if (typeof req.body.password !== 'undefined' && req.body.password === 'DataDog') {
+  if (typeof req.body.password !== 'undefined' && req.body.password === 'DataD0g') {
     res.json({token: jwt.create(req.body.password)});
   } else {
     res.status(401).send({error: 'incorrect password'});
@@ -58,18 +60,19 @@ app.post('/api/results/leaders', async (req, res) => {
 
 app.post('/api/auth/results', async (req, res) => {
   try {
-    if (typeof req.body.time === 'undefined') {
+    if (typeof req.body.time === 'undefined' || req.body.time.length === 0) {
       throw "time cannot be empty";
     }
 
     const date = new Date();
     date.setTime(0);
     const parts = req.body.time.split(":");
-    const secondParts = parts[1].split(".");
 
     if (parts.length !== 2) {
       throw "incorrect format. Use mm:ss.ms";
     }
+
+    const secondParts = parts[1].split(".");
 
     date.setMinutes(parts[0]);
     date.setSeconds(secondParts[0]);
